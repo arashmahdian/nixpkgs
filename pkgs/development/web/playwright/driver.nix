@@ -47,23 +47,10 @@ let
 
     nativeBuildInputs = [ unzip ];
 
-    postPatch = ''
-      # Use Nix's NodeJS instead of the bundled one.
-      substituteInPlace playwright.sh --replace '"$SCRIPT_PATH/node"' '"${nodejs}/bin/node"'
-      rm node
-
-      # Hard-code the script path to $out directory to avoid a dependency on coreutils
-      substituteInPlace playwright.sh \
-        --replace 'SCRIPT_PATH="$(cd "$(dirname "$0")" ; pwd -P)"' "SCRIPT_PATH=$out"
-
-      patchShebangs playwright.sh package/bin/*.sh
-    '';
-
     installPhase = ''
       runHook preInstall
 
-      mkdir -p $out/bin
-      mv playwright.sh $out/bin/playwright
+      mkdir $out
       mv package $out/
 
       runHook postInstall
@@ -79,7 +66,6 @@ let
       }.${system} or throwSystem;
       browsers-chromium = browsers-linux {};
     };
-    meta.mainProgram = "playwright";
   });
 
   browsers-mac = stdenv.mkDerivation {

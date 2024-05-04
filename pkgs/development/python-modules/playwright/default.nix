@@ -5,6 +5,7 @@
 , git
 , greenlet
 , fetchFromGitHub
+, nodejs
 , pyee
 , python
 , pythonOlder
@@ -28,7 +29,7 @@ buildPythonPackage rec {
     owner = "microsoft";
     repo = "playwright-python";
     rev = "refs/tags/v${version}";
-    hash = "sha256-AzH1rZFqEH8sovZZfJykvsEmCedEZWigQFHWHl6/PdE=";
+    hash = "sha256-bSja+rer1wW9FgMLMe5HL8Ir5w0k2sDEkZNWlwYDqr8=";
   };
 
   patches = [
@@ -64,7 +65,8 @@ buildPythonPackage rec {
 
     # Set the correct driver path with the help of a patch in patches
     substituteInPlace playwright/_impl/_driver.py \
-      --replace "@driver@" "${driver}/bin/playwright"
+      --replace "@node@" "${nodejs}/bin/node" \
+      --replace "@driver@" "${driver}/package/cli.js"
   '';
 
 
